@@ -5,21 +5,28 @@ import { useCallback } from "react";
 
 const Menu = () => {
   const [isOpen, setIsOpen] = useState(false); // false
-  const handleMenuStatus = useCallback((status, click = false) => {
+  const [selected, setSelected] = useState(-1);
+
+  const handleMenuStatus = useCallback((status, click = false, index = -1) => {
     if (click && !status) return;
+    setSelected(index);
     setIsOpen(status);
   }, []);
   return (
     <Container>
-      {MENUS.map((menu) => (
+      {MENUS.map((menu, index) => (
         <MenuContainer
           onMouseDown={() => handleMenuStatus(!isOpen, true)} // 필요 없나..?
-          onMouseEnter={() => handleMenuStatus(true)}
+          onMouseEnter={() => handleMenuStatus(true, false, index)}
           onMouseLeave={() => handleMenuStatus(false)}
         >
           <MenuItem>{menu.name}</MenuItem>
           {isOpen && (
-            <ChildMenusContainer>
+            <ChildMenusContainer
+              style={{
+                borderTop: isOpen && selected == index && "1px solid red",
+              }}
+            >
               {menu.childMenus.map((child) => (
                 <MenuItem>{child.name}</MenuItem>
               ))}
@@ -44,7 +51,6 @@ const MenuContainer = styled.div`
 const ChildMenusContainer = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 10px;
 `;
 const MenuItem = styled.div`
   height: 5vh;
