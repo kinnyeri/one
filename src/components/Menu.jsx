@@ -7,8 +7,7 @@ const Menu = () => {
   const [isOpen, setIsOpen] = useState(false); // false
   const [selected, setSelected] = useState(-1);
 
-  const handleMenuStatus = useCallback((status, click = false, index = -1) => {
-    if (click && !status) return;
+  const handleMenuStatus = useCallback((status, index = -1) => {
     setSelected(index);
     setIsOpen(status);
   }, []);
@@ -16,19 +15,19 @@ const Menu = () => {
     <Container>
       {MENUS.map((menu, index) => (
         <MenuContainer
-          onMouseDown={() => handleMenuStatus(!isOpen, true)} // 필요 없나..?
-          onMouseEnter={() => handleMenuStatus(true, false, index)}
+          key={menu.id}
+          onMouseEnter={() => handleMenuStatus(true, index)}
           onMouseLeave={() => handleMenuStatus(false)}
         >
           <MenuItem>{menu.name}</MenuItem>
           {isOpen && (
             <ChildMenusContainer
               style={{
-                borderTop: isOpen && selected == index && "1px solid red",
+                borderTopColor: isOpen && selected == index && "red",
               }}
             >
               {menu.childMenus.map((child) => (
-                <MenuItem>{child.name}</MenuItem>
+                <MenuItem key={child.id}>{child.name}</MenuItem>
               ))}
             </ChildMenusContainer>
           )}
@@ -51,10 +50,14 @@ const MenuContainer = styled.div`
 const ChildMenusContainer = styled.div`
   display: flex;
   flex-direction: column;
+  border-top: 1px solid navy;
 `;
 const MenuItem = styled.div`
   height: 5vh;
   text-align: center;
   line-height: 5vh;
+  &:hover {
+    color: white;
+  }
 `;
 export default Menu;
