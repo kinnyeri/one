@@ -2,8 +2,10 @@ import styled from "styled-components";
 import MENUS from "../data";
 import { useState } from "react";
 import { useCallback } from "react";
+import { useSelector } from "react-redux";
 
 const Menu = () => {
+  const menus = useSelector((state) => state.menu);
   const [isOpen, setIsOpen] = useState(false); // false
   const [selected, setSelected] = useState(-1);
 
@@ -13,7 +15,7 @@ const Menu = () => {
   }, []);
   return (
     <Container>
-      {MENUS.map((menu, index) => (
+      {menus.map((menu, index) => (
         <MenuContainer
           key={menu.id}
           onMouseEnter={() => handleMenuStatus(true, index)}
@@ -40,7 +42,7 @@ const Menu = () => {
 const Container = styled.div`
   width: 100%;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(20%, auto));
+  grid-template-columns: repeat(auto-fit, minmax(10%, auto));
 `;
 const MenuContainer = styled.div`
   width: 100%;
