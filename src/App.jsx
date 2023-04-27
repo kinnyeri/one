@@ -2,7 +2,6 @@ import { useDispatch, useSelector } from "react-redux";
 import menuData from "./assets/data_body.json";
 import { Menu, ButtonBox } from "./components";
 import "./index.css";
-import { addChildMenu, addParentMenu } from "./modules/menu";
 
 function App() {
   console.log(menuData);

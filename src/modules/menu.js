@@ -51,18 +51,8 @@ const initialState = menuData.map((menu) => ({
 
 export default function todos(state = initialState, action) {
   switch (action.type) {
-    case ADD_PARENT_MENU:
+    case CHANGE_DISPLAY_LOGOUT:
       return state.concat(action.menu);
-    case ADD_CHILD_MENU:
-      let newState = initialState.map((p) => {
-        if (p.id === p_id)
-          return {
-            ...p,
-            childMenus: [...childMenus, action.menu],
-          };
-        else p;
-      });
-      return newState;
     default:
       return state;
   }
