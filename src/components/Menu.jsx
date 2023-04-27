@@ -1,9 +1,12 @@
 import styled from "styled-components";
-import MENUS from "../data";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useCallback } from "react";
+import { useSelector } from "react-redux";
 
 const Menu = () => {
+  const menus = useSelector((state) => state.menu);
+  const status = useSelector((state) => state.status);
+
   const [isOpen, setIsOpen] = useState(false); // false
   const [selected, setSelected] = useState(-1);
 
@@ -11,28 +14,43 @@ const Menu = () => {
     setSelected(index);
     setIsOpen(status);
   }, []);
+
+  // useEffect(()=>{
+  //   if(status === "LOGOUT")
+  // },[status]);
+
   return (
     <Container>
-      {MENUS.map((menu, index) => (
-        <MenuContainer
-          key={menu.id}
-          onMouseEnter={() => handleMenuStatus(true, index)}
-          onMouseLeave={() => handleMenuStatus(false)}
-        >
-          <MenuItem>{menu.name}</MenuItem>
-          {isOpen && (
-            <ChildMenusContainer
-              style={{
-                borderTopColor: isOpen && selected == index && "red",
-              }}
+      {menus.reduce((cur, menu, index) => {
+        if (menu.displayStatus === "SHOW")
+          return [
+            ...cur,
+            <MenuContainer
+              key={menu.id}
+              onMouseEnter={() => handleMenuStatus(true, index)}
+              onMouseLeave={() => handleMenuStatus(false)}
             >
-              {menu.childMenus.map((child) => (
-                <MenuItem key={child.id}>{child.name}</MenuItem>
-              ))}
-            </ChildMenusContainer>
-          )}
-        </MenuContainer>
-      ))}
+              <MenuItem>{menu.name}</MenuItem>
+              {isOpen && (
+                <ChildMenusContainer
+                  style={{
+                    borderTopColor: isOpen && selected == index && "red",
+                  }}
+                >
+                  {menu.childMenus.reduce((chidCur, child) => {
+                    if (child.displayStatus === "SHOW")
+                      return [
+                        ...chidCur,
+                        <MenuItem key={child.id}>{child.name}</MenuItem>,
+                      ];
+                    else return chidCur;
+                  }, [])}
+                </ChildMenusContainer>
+              )}
+            </MenuContainer>,
+          ];
+        else return cur;
+      }, [])}
     </Container>
   );
 };
@@ -40,10 +58,9 @@ const Menu = () => {
 const Container = styled.div`
   width: 100%;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(20%, auto));
+  grid-template-columns: repeat(auto-fit, minmax(10%, auto));
 `;
 const MenuContainer = styled.div`
-  width: 100%;
   background-color: navy;
   color: grey;
 `;
