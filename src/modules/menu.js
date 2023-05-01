@@ -57,6 +57,7 @@ const initialState = menuData.reduce(
 /* 모듈 */
 let hided = [1, 5, 16, 24, 31, 36, 46];
 const changeState = (state, hide) => {
+  // 메뉴 보이는 상태 변경
   const newState = state;
   hided.forEach((el) => {
     newState[el].displayStatus = "SHOW";
@@ -68,6 +69,7 @@ const changeState = (state, hide) => {
   });
   return { ...newState };
 };
+
 export default function todos(state = initialState, action) {
   switch (action.type) {
     case CHANGE_DISPLAY_LOGOUT:

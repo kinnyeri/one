@@ -1,20 +1,22 @@
 import styled from "styled-components";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useCallback } from "react";
 import { useSelector } from "react-redux";
 
 const Menu = () => {
-  const menus = useSelector((state) => state.menu);
-  const status = useSelector((state) => state.status);
-  const [isOpen, setIsOpen] = useState(false); // false
-  const [selected, setSelected] = useState(-1);
+  const menus = useSelector((state) => state.menu); // 메뉴 데이터 상태
+
+  const [isOpen, setIsOpen] = useState(false); // 드롭다운 상태
+  const [selected, setSelected] = useState(-1); // 현재 마우스가 위치하고 있는 상태
 
   const handleMenuStatus = useCallback((status, index = -1) => {
+    // 메뉴 드롭다운 및 포커스 상태 변경
     setSelected(index);
     setIsOpen(status);
   }, []);
 
   const makeChildMenu = useCallback((childMenus) => {
+    // sub메뉴 컴포넌트 생성
     let res = [];
     for (
       let now = childMenus.head.next;
@@ -29,6 +31,7 @@ const Menu = () => {
   }, []);
 
   const makeMenu = useCallback(() => {
+    // 메뉴 컴포넌트 생성
     let res = [];
     for (let now = menus.head.next; now != null; now = menus[now].next) {
       const menu = menus[now];
@@ -53,7 +56,7 @@ const Menu = () => {
       );
     }
     return res;
-  }, [selected]);
+  }, [menus, selected]);
 
   return <Container>{makeMenu()}</Container>;
 };

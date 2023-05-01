@@ -9,8 +9,9 @@ import { useEffect } from "react";
 
 const ButtonBox = () => {
   const dispatch = useDispatch();
-  const status = useSelector((state) => state.status);
+  const status = useSelector((state) => state.status); // 로그인 상태
 
+  // 로그인시 상태 변경 함수
   const loginUser = () => {
     dispatch(changeStatus("USER"));
   };
@@ -21,6 +22,7 @@ const ButtonBox = () => {
     dispatch(changeStatus("LOGOUT"));
   };
 
+  // 상태 변경시 접근 가능 메뉴 변경
   useEffect(() => {
     switch (status) {
       case "LOGOUT":

@@ -10,6 +10,7 @@ function App() {
   const logout = () => dispatch(changeDisplayLogout());
 
   useEffect(() => {
+    // 첫 진입시 로그아웃 상태로 초기화
     logout();
   }, []);
 
