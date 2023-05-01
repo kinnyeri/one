@@ -1,16 +1,18 @@
 import { useDispatch, useSelector } from "react-redux";
-import menuData from "./assets/data_body.json";
 import { Menu, ButtonBox } from "./components";
 import "./index.css";
+import { changeDisplayLogout } from "./modules/menu";
+import { useEffect } from "react";
 
 function App() {
-  console.log(menuData);
-
   const menus = useSelector((state) => state.menu);
-  console.log(menus);
-  console.log(status);
-  // init(menuData);
-  // console.log(menus);
+  const dispatch = useDispatch();
+  const logout = () => dispatch(changeDisplayLogout());
+
+  useEffect(() => {
+    logout();
+  }, []);
+
   return (
     <div>
       <Menu></Menu>
