@@ -6,7 +6,6 @@ import { useSelector } from "react-redux";
 const Menu = () => {
   const menus = useSelector((state) => state.menu);
   const status = useSelector((state) => state.status);
-
   const [isOpen, setIsOpen] = useState(false); // false
   const [selected, setSelected] = useState(-1);
 
@@ -15,44 +14,48 @@ const Menu = () => {
     setIsOpen(status);
   }, []);
 
-  // useEffect(()=>{
-  //   if(status === "LOGOUT")
-  // },[status]);
+  const makeChildMenu = useCallback((childMenus) => {
+    let res = [];
+    for (
+      let now = childMenus.head.next;
+      now != null;
+      now = childMenus[now].next
+    ) {
+      const child = childMenus[now];
+      if (child.displayStatus === "HIDE") continue;
+      res.push(<MenuItem key={now}>{child.name}</MenuItem>);
+    }
+    return res;
+  }, []);
 
-  return (
-    <Container>
-      {menus.reduce((cur, menu, index) => {
-        if (menu.displayStatus === "SHOW")
-          return [
-            ...cur,
-            <MenuContainer
-              key={menu.id}
-              onMouseEnter={() => handleMenuStatus(true, index)}
-              onMouseLeave={() => handleMenuStatus(false)}
+  const makeMenu = useCallback(() => {
+    let res = [];
+    for (let now = menus.head.next; now != null; now = menus[now].next) {
+      const menu = menus[now];
+      if (menu.displayStatus === "HIDE") continue;
+      res.push(
+        <MenuContainer
+          key={now}
+          onMouseEnter={() => handleMenuStatus(true, now)}
+          onMouseLeave={() => handleMenuStatus(false)}
+        >
+          <MenuItem>{menu.name}</MenuItem>
+          {isOpen && (
+            <ChildMenusContainer
+              style={{
+                borderTopColor: isOpen && selected == now && "red",
+              }}
             >
-              <MenuItem>{menu.name}</MenuItem>
-              {isOpen && (
-                <ChildMenusContainer
-                  style={{
-                    borderTopColor: isOpen && selected == index && "red",
-                  }}
-                >
-                  {menu.childMenus.reduce((chidCur, child) => {
-                    if (child.displayStatus === "SHOW")
-                      return [
-                        ...chidCur,
-                        <MenuItem key={child.id}>{child.name}</MenuItem>,
-                      ];
-                    else return chidCur;
-                  }, [])}
-                </ChildMenusContainer>
-              )}
-            </MenuContainer>,
-          ];
-        else return cur;
-      }, [])}
-    </Container>
-  );
+              {makeChildMenu(menu.childMenus)}
+            </ChildMenusContainer>
+          )}
+        </MenuContainer>
+      );
+    }
+    return res;
+  }, [selected]);
+
+  return <Container>{makeMenu()}</Container>;
 };
 
 const Container = styled.div`
